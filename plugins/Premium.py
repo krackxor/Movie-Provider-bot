@@ -21,18 +21,18 @@ async def remove_premium(client, message):
         user_id = int(message.command[1])
         user = await client.get_users(user_id)
         if await db.remove_premium_access(user_id):
-            await message.reply_text("User removed successfully!")
+            await message.reply_text("Pengguna berhasil dihapus!")
             if user:
                 await client.send_message(
                     chat_id=user_id,
-                    text=f"<b>ʜᴇʏ {user.mention},\n\nʏᴏᴜʀ ᴘʀᴇᴍɪᴜᴍ ᴀᴄᴄᴇss ʜᴀs ʙᴇᴇɴ ʀᴇᴍᴏᴠᴇᴅ.\nᴛʜᴀɴᴋ ʏᴏᴜ ꜰᴏʀ ᴜsɪɴɢ ᴏᴜʀ sᴇʀᴠɪᴄᴇ 😊\nᴄʟɪᴄᴋ ᴏɴ /plan ᴛᴏ ᴄʜᴇᴄᴋ ᴏᴜᴛ ᴏᴛʜᴇʀ ᴘʟᴀɴꜱ.</b>"
+                    teks = f"<b>Halo {user.mention},\n\nAkses premium Anda telah dihapus.\nTerima kasih telah menggunakan layanan kami 😊\nKlik /plan untuk melihat harga vip.</b>"
                 )
             else:
-                await message.reply_text("User removed successfully!")
+                await message.reply_text("Pengguna berhasil dihapus!")
         else:
-            await message.reply_text("ᴜɴᴀʙʟᴇ ᴛᴏ ʀᴇᴍᴏᴠᴇ ᴜꜱᴇᴅ !\nᴀʀᴇ ʏᴏᴜ ꜱᴜʀᴇ, ɪᴛ ᴡᴀꜱ ᴀ ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀ ɪᴅ ?")
+            await message.reply_text("Tidak dapat menghapus pengguna tersebut! Apakah Anda yakin bahwa dia adalah pengguna premium?")
     else:
-        await message.reply_text("ᴜꜱᴀɢᴇ: /remove_premium user_id") 
+        await message.reply_text("Gunakan: /remove_premium user_id") 
 
 
 @Client.on_message(filters.command("myplan"))
@@ -44,7 +44,7 @@ async def myplan(client, message):
         #expiry_time = datetime.datetime.now() + datetime.timedelta(seconds=data)
         expiry = data.get("expiry_time") 
         expiry_ist = expiry.astimezone(pytz.timezone("Asia/Kolkata"))
-        expiry_str_in_ist = expiry.astimezone(pytz.timezone("Asia/Kolkata")).strftime("%d-%m-%Y\n⏱️ ᴇxᴘɪʀʏ ᴛɪᴍᴇ : %I:%M:%S %p")            
+        expiry_str_in_ist = expiry.astimezone(pytz.timezone("Asia/Kolkata")).strftime("%d-%m-%Y\n⏱️ Waktu Kedaluwarsa : %I:%M:%S %p")            
         # Calculate time difference
         current_time = datetime.datetime.now(pytz.timezone("Asia/Kolkata"))
         time_left = expiry_ist - current_time
@@ -56,10 +56,10 @@ async def myplan(client, message):
             
         # Format time left as a string
         time_left_str = f"{days} ᴅᴀʏꜱ, {hours} ʜᴏᴜʀꜱ, {minutes} ᴍɪɴᴜᴛᴇꜱ"
-        await message.reply_text(f"⚜️ ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀ ᴅᴀᴛᴀ :\n\n👤 ᴜꜱᴇʀ : {user}\n⚡ ᴜꜱᴇʀ ɪᴅ : <code>{user_id}</code>\n⏰ ᴛɪᴍᴇ ʟᴇꜰᴛ : {time_left_str}\n⌛️ ᴇxᴘɪʀʏ ᴅᴀᴛᴇ : {expiry_str_in_ist}")   
+        await message.reply_text(f"⚜️ Data Pengguna Premium :\n\n👤 Pengguna : {user}\n⚡ ID Pengguna : <code>{user_id}</code>\n⏰ Waktu Tersisa : {time_left_str}\n⌛️ Tanggal Kadaluarsa : {expiry_str_in_ist}")   
     else:
-        await message.reply_text(f"ʜᴇʏ {user},\n\nʏᴏᴜ ᴅᴏ ɴᴏᴛ ʜᴀᴠᴇ ᴀɴʏ ᴀᴄᴛɪᴠᴇ ᴘʀᴇᴍɪᴜᴍ ᴘʟᴀɴs, ɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴛᴀᴋᴇ ᴘʀᴇᴍɪᴜᴍ ᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ ʙᴇʟᴏᴡ ʙᴜᴛᴛᴏɴ 👇",
-                                reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("💸 ᴄʜᴇᴄᴋᴏᴜᴛ ᴘʀᴇᴍɪᴜᴍ ᴘʟᴀɴꜱ 💸", callback_data='seeplans')]]))			 
+       await message.reply_text(f"Halo {user},\n\nKamu tidak memiliki premium yang aktif. Jika kamu ingin mengaktifkan premium, klik tombol di bawah 👇"),
+                                reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("💸 Beli Premium 💸", callback_data='seeplans')]]))			 
 
 @Client.on_message(filters.command("get_premium") & filters.user(ADMINS))
 async def get_premium(client, message):
@@ -71,7 +71,7 @@ async def get_premium(client, message):
             #expiry_time = datetime.datetime.now() + datetime.timedelta(seconds=data)
             expiry = data.get("expiry_time") 
             expiry_ist = expiry.astimezone(pytz.timezone("Asia/Kolkata"))
-            expiry_str_in_ist = expiry.astimezone(pytz.timezone("Asia/Kolkata")).strftime("%d-%m-%Y\n⏱️ ᴇxᴘɪʀʏ ᴛɪᴍᴇ : %I:%M:%S %p")            
+            expiry_str_in_ist = expiry.astimezone(pytz.timezone("Asia/Kolkata")).strftime("%d-%m-%Y\n⏱️ Waktu Kedaluwarsa : %I:%M:%S %p")            
             # Calculate time difference
             current_time = datetime.datetime.now(pytz.timezone("Asia/Kolkata"))
             time_left = expiry_ist - current_time
@@ -83,17 +83,17 @@ async def get_premium(client, message):
             
             # Format time left as a string
             time_left_str = f"{days} days, {hours} hours, {minutes} minutes"
-            await message.reply_text(f"⚜️ ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀ ᴅᴀᴛᴀ :\n\n👤 ᴜꜱᴇʀ : {user.mention}\n⚡ ᴜꜱᴇʀ ɪᴅ : <code>{user_id}</code>\n⏰ ᴛɪᴍᴇ ʟᴇꜰᴛ : {time_left_str}\n⌛️ ᴇxᴘɪʀʏ ᴅᴀᴛᴇ : {expiry_str_in_ist}")
+            await message.reply_text(f"⚜️ Data Pengguna Premium :\n\n👤 Pengguna : {user.mention}\n⚡ ID Pengguna : <code>{user_id}</code>\n⏰ Waktu Tersisa : {time_left_str}\n⌛️ Tanggal Kadaluwarsa : {expiry_str_in_ist}")
         else:
-            await message.reply_text("ɴᴏ ᴀɴʏ ᴘʀᴇᴍɪᴜᴍ ᴅᴀᴛᴀ ᴏꜰ ᴛʜᴇ ᴡᴀꜱ ꜰᴏᴜɴᴅ ɪɴ ᴅᴀᴛᴀʙᴀꜱᴇ !")
+            await message.reply_text("Tidak ada data premium yang ditemukan dalam database!")
     else:
-        await message.reply_text("ᴜꜱᴀɢᴇ : /get_premium user_id")
+        await message.reply_text("Gunakan : /get_premium user_id")
 
 @Client.on_message(filters.command("add_premium") & filters.user(ADMINS))
 async def give_premium_cmd_handler(client, message):
     if len(message.command) == 4:
         time_zone = datetime.datetime.now(pytz.timezone("Asia/Kolkata"))
-        current_time = time_zone.strftime("%d-%m-%Y\n⏱️ ᴊᴏɪɴɪɴɢ ᴛɪᴍᴇ : %I:%M:%S %p") 
+        current_time = time_zone.strftime("%d-%m-%Y\n⏱️ Waktu Bergabung : %I:%M:%S %p") 
         user_id = int(message.command[1])  # Convert the user_id to integer
         user = await client.get_users(user_id)
         time = message.command[2]+" "+message.command[3]
@@ -105,22 +105,22 @@ async def give_premium_cmd_handler(client, message):
             data = await db.get_user(user_id)
             expiry = data.get("expiry_time")   
             expiry_str_in_ist = expiry.astimezone(pytz.timezone("Asia/Kolkata")).strftime("%d-%m-%Y\n⏱️ ᴇxᴘɪʀʏ ᴛɪᴍᴇ : %I:%M:%S %p")         
-            await message.reply_text(f"ᴘʀᴇᴍɪᴜᴍ ᴀᴅᴅᴇᴅ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ✅\n\n👤 ᴜꜱᴇʀ : {user.mention}\n⚡ ᴜꜱᴇʀ ɪᴅ : <code>{user_id}</code>\n⏰ ᴘʀᴇᴍɪᴜᴍ ᴀᴄᴄᴇꜱꜱ : <code>{time}</code>\n\n⏳ ᴊᴏɪɴɪɴɢ ᴅᴀᴛᴇ : {current_time}\n\n⌛️ ᴇxᴘɪʀʏ ᴅᴀᴛᴇ : {expiry_str_in_ist}", disable_web_page_preview=True)
+            await message.reply_text(f"Premium ditambahkan dengan sukses ✅\n\n👤 Pengguna : {user.mention}\n⚡ ID Pengguna : <code>{user_id}</code>\n⏰ Akses Premium : <code>{time}</code>\n\n⏳ Tanggal Bergabung : {current_time}\n\n⌛️ Tanggal Kadaluarsa : {expiry_str_in_ist}", disable_web_page_preview=True)
             await client.send_message(
                 chat_id=user_id,
-                text=f"👋 ʜᴇʏ {user.mention},\nᴛʜᴀɴᴋ ʏᴏᴜ ꜰᴏʀ ᴘᴜʀᴄʜᴀꜱɪɴɢ ᴘʀᴇᴍɪᴜᴍ.\nᴇɴᴊᴏʏ !! ✨🎉\n\n⏰ ᴘʀᴇᴍɪᴜᴍ ᴀᴄᴄᴇꜱꜱ : <code>{time}</code>\n⏳ ᴊᴏɪɴɪɴɢ ᴅᴀᴛᴇ : {current_time}\n\n⌛️ ᴇxᴘɪʀʏ ᴅᴀᴛᴇ : {expiry_str_in_ist}", disable_web_page_preview=True              
+                text=f"👋 Hai {user.mention},\nTerima kasih telah membeli langganan premium. Selamat menikmati!! ✨🎉\n\n⏰ Akses Premium: <code>{time}</code>\n⏳ Tanggal Bergabung: {current_time}\n\n⌛️ Tanggal Kadaluarsa: {expiry_str_in_ist}", disable_web_page_preview=True              
             )    
-            await client.send_message(PREMIUM_LOGS, text=f"#Added_Premium\n\n👤 ᴜꜱᴇʀ : {user.mention}\n⚡ ᴜꜱᴇʀ ɪᴅ : <code>{user_id}</code>\n⏰ ᴘʀᴇᴍɪᴜᴍ ᴀᴄᴄᴇꜱꜱ : <code>{time}</code>\n\n⏳ ᴊᴏɪɴɪɴɢ ᴅᴀᴛᴇ : {current_time}\n\n⌛️ ᴇxᴘɪʀʏ ᴅᴀᴛᴇ : {expiry_str_in_ist}", disable_web_page_preview=True)
-                    
+            await client.send_message(PREMIUM_LOGS, text=f"#Tambah_Premium\n\n👤 Pengguna : {user.mention}\n⚡ ID Pengguna : <code>{user_id}</code>\n⏰ Akses Premium : <code>{time}</code>\n\n⏳ Tanggal Bergabung : {current_time}\n\n⌛️ Tanggal Kadaluarsa : {expiry_str_in_ist}", disable_web_page_preview=True)
+     
         else:
-            await message.reply_text("Invalid time format. Please use '1 day for days', '1 hour for hours', or '1 min for minutes', or '1 month for months' or '1 year for year'")
+            await message.reply_text("Format salah. Gunakam '1 day untuk hari', '1 hour untuk jam', or '1 min untuk menit', or '1 month untuk bulan' or '1 year untuk tahun'")
     else:
-        await message.reply_text("Usage : /add_premium user_id time (e.g., '1 day for days', '1 hour for hours', or '1 min for minutes', or '1 month for months' or '1 year for year')")
+        await message.reply_text("Gunakan : /add_premium user_id time (e.g., '1 day untuk hari', '1 hour untuk jam', or '1 min untuk menit', or '1 month untuk bulan' or '1 year untuk tahun')")
 
 @Client.on_message(filters.command("premium_users") & filters.user(ADMINS))
 async def premium_user(client, message):
-    aa = await message.reply_text("<i>ꜰᴇᴛᴄʜɪɴɢ...</i>")
-    new = f"⚜️ ᴘʀᴇᴍɪᴜᴍ ᴜꜱᴇʀꜱ ʟɪꜱᴛ :\n\n"
+    aa = await message.reply_text("<i>Tunggu sebentar...</i>")
+    new = f"⚜️ Daftar Pengguna Premium :\n\n"
     user_count = 1
     users = await db.get_all_users()
     async for user in users:
@@ -128,14 +128,14 @@ async def premium_user(client, message):
         if data and data.get("expiry_time"):
             expiry = data.get("expiry_time") 
             expiry_ist = expiry.astimezone(pytz.timezone("Asia/Kolkata"))
-            expiry_str_in_ist = expiry.astimezone(pytz.timezone("Asia/Kolkata")).strftime("%d-%m-%Y\n⏱️ ᴇxᴘɪʀʏ ᴛɪᴍᴇ : %I:%M:%S %p")            
+            expiry_str_in_ist = expiry.astimezone(pytz.timezone("Asia/Kolkata")).strftime("%d-%m-%Y\n⏱️ Waktu Kedaluwarsa : %I:%M:%S %p")            
             current_time = datetime.datetime.now(pytz.timezone("Asia/Kolkata"))
             time_left = expiry_ist - current_time
             days = time_left.days
             hours, remainder = divmod(time_left.seconds, 3600)
             minutes, seconds = divmod(remainder, 60)
             time_left_str = f"{days} days, {hours} hours, {minutes} minutes"	 
-            new += f"{user_count}. {(await client.get_users(user['id'])).mention}\n👤 ᴜꜱᴇʀ ɪᴅ : {user['id']}\n⏳ ᴇxᴘɪʀʏ ᴅᴀᴛᴇ : {expiry_str_in_ist}\n⏰ ᴛɪᴍᴇ ʟᴇꜰᴛ : {time_left_str}\n"
+            new += f"{user_count}. {(await client.get_users(user['id'])).mention}\n👤 ID Pengguna : {user['id']}\n⏳ Tanggal Kadaluarsa : {expiry_str_in_ist}\n⏰ Waktu Tersisa : {time_left_str}\n"
             user_count += 1
         else:
             pass
@@ -153,7 +153,7 @@ async def plan(client, message):
     user_id = message.from_user.id 
     users = message.from_user.mention 
     btn = [
-        [InlineKeyboardButton("📲 Send payment screenshot here", user_id=int(6695586027))],
-        [InlineKeyboardButton("❌ Close ❌", callback_data="close_data")]
+        [InlineKeyboardButton("📲 Kirim Bukti TF", user_id=int(6510365486))],
+        [InlineKeyboardButton("❌ Tutup ❌", callback_data="close_data")]
     ]
     await message.reply_photo(photo="https://telegra.ph/file/734170f40b8169830d821.jpg", caption=script.PREMIUM_TEXT.format(message.from_user.mention), reply_markup=InlineKeyboardMarkup(btn))
